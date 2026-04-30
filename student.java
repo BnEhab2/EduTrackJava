@@ -1,4 +1,4 @@
-public class Student {
+public class student {
 
     // Public Fields
     public String name;

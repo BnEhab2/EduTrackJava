@@ -1,4 +1,3 @@
-```java
 public class Student {
 
     // Public Fields
@@ -45,4 +44,3 @@ public class Student {
         System.out.println("-----------------------------------");
     }
 }
-```

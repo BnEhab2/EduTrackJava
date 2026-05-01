@@ -6,10 +6,10 @@ public class EduTrackApp {
 
     public static void main(String[] args) {
 
-        Scanner   scanner      = new Scanner(System.in);
-        Student[] students     = new Student[MAX_STUDENTS];
-        int       studentCount = 0;
-        boolean   running      = true;
+        Scanner scanner = new Scanner(System.in);
+        Student[] students = new Student[MAX_STUDENTS];
+        int studentCount = 0;
+        boolean running = true;
 
         while (running) {
             printMenu();
@@ -30,7 +30,7 @@ public class EduTrackApp {
 
                     double java_g = readGrade(scanner, "Java");
                     double math_g = readGrade(scanner, "Math");
-                    double eng_g  = readGrade(scanner, "English");
+                    double eng_g = readGrade(scanner, "English");
 
                     students[studentCount] = new Student(name, java_g, math_g, eng_g);
                     studentCount++;
@@ -88,7 +88,7 @@ public class EduTrackApp {
                     double[] avgs = new double[studentCount];
                     String[] names = new String[studentCount];
                     for (int i = 0; i < studentCount; i++) {
-                        avgs[i]  = students[i].average;
+                        avgs[i] = students[i].average;
                         names[i] = students[i].name;
                     }
                     EduTrackAnalyzer.printClassStats(names, avgs, studentCount);
@@ -110,7 +110,7 @@ public class EduTrackApp {
 
     private static void printMenu() {
         System.out.println("\n===============================================");
-        System.out.println("|        Welcome to EduTrack v1.0             |");
+        System.out.println("|               Welcome to EduTrack             |");
         System.out.println("===============================================");
         System.out.println("[1] Add New Student");
         System.out.println("[2] Display All Students");
@@ -142,26 +142,30 @@ public class EduTrackApp {
         double[] avgs = new double[count];
         String[] nameArr = new String[count];
         for (int i = 0; i < count; i++) {
-            avgs[i]    = students[i].average;
+            avgs[i] = students[i].average;
             nameArr[i] = students[i].name;
         }
 
         double overallSum = 0;
-        for (int i = 0; i < count; i++) overallSum += avgs[i];
+        for (int i = 0; i < count; i++)
+            overallSum += avgs[i];
         double classAvg = Math.round((overallSum / count) * 10.0) / 10.0;
 
         double highest = EduTrackEngine.findHighestAverage(avgs);
 
         String topName = nameArr[0];
         for (int i = 0; i < count; i++) {
-            if (avgs[i] == highest) topName = nameArr[i];
+            if (avgs[i] == highest)
+                topName = nameArr[i];
         }
 
         int[] dist = EduTrackEngine.countPerGrade(avgs);
         int passing = 0, failing = 0;
         for (int i = 0; i < count; i++) {
-            if (EduTrackEngine.isPassing(avgs[i])) passing++;
-            else failing++;
+            if (EduTrackEngine.isPassing(avgs[i]))
+                passing++;
+            else
+                failing++;
         }
 
         System.out.println("================================================================");
@@ -181,7 +185,8 @@ public class EduTrackApp {
             String line = sc.nextLine().trim();
             try {
                 int value = Integer.parseInt(line);
-                if (value >= min && value <= max) return value;
+                if (value >= min && value <= max)
+                    return value;
                 System.out.printf("  Please enter a number between %d and %d: ", min, max);
             } catch (NumberFormatException e) {
                 System.out.printf("  Invalid input. Enter a number between %d and %d: ", min, max);
@@ -195,7 +200,8 @@ public class EduTrackApp {
             String line = sc.nextLine().trim();
             try {
                 double value = Double.parseDouble(line);
-                if (value >= 0 && value <= 100) return value;
+                if (value >= 0 && value <= 100)
+                    return value;
                 System.out.printf("  %s grade must be 0-100. Try again: ", subject);
             } catch (NumberFormatException e) {
                 System.out.printf("  Invalid input. Enter %s grade (0-100): ", subject);

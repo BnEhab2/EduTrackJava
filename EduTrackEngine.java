@@ -1,94 +1,128 @@
+/**
+ * EduTrackEngine — Core calculation engine for the EduTrack system.
+ * Provides static utility methods for grade computation, validation,
+ * and reporting. Used by both Student (3 subjects) and EduTrackAnalyzer (10 subjects).
+ *
+ * No ArrayList or Streams — arrays only.
+ */
 public class EduTrackEngine {
 
-    // 1- Calculate Average (array version)
+    // ==================== Grading Constants ====================
+    public static final double GRADE_A_MIN = 90.0;
+    public static final double GRADE_B_MIN = 80.0;
+    public static final double GRADE_C_MIN = 70.0;
+    public static final double GRADE_D_MIN = 60.0;   // also the passing threshold
+    public static final double MAX_GRADE    = 100.0;
+    public static final double MIN_GRADE    = 0.0;
+
+    // ==================== Core Methods ====================
+
+    /**
+     * Calculates the average of valid grades (0–100).
+     * Handles null/empty arrays safely — returns 0.0.
+     */
     public static double calculateAverage(double[] grades) {
-        if (grades == null || grades.length == 0) return 0;
+        if (grades == null || grades.length == 0) return 0.0;
 
         double sum = 0;
+        int validCount = 0;
 
         for (int i = 0; i < grades.length; i++) {
-            if (grades[i] >= 0 && grades[i] <= 100) {
+            if (grades[i] >= MIN_GRADE && grades[i] <= MAX_GRADE) {
                 sum += grades[i];
-            } else {
-                sum += 0; // ignore invalid values
+                validCount++;
             }
         }
 
-        return sum / grades.length;
+        if (validCount == 0) return 0.0;
+        return Math.round((sum / validCount) * 10.0) / 10.0;
     }
 
-    // 1-Overloaded: Calculate Average (single grade version)
-    public static double calculateAverage(double singleGrade) {
-        return singleGrade;
+    /**
+     * Converts a numeric average to a letter grade using grading constants.
+     */
+    public static char toLetter(double avg) {
+        if (avg >= GRADE_A_MIN) return 'A';
+        if (avg >= GRADE_B_MIN) return 'B';
+        if (avg >= GRADE_C_MIN) return 'C';
+        if (avg >= GRADE_D_MIN) return 'D';
+        return 'F';
     }
 
-    // 2- Convert to Letter Grade
-    public static char getLetterGrade(double avg) {
-        if (avg >= 90) return 'A';
-        else if (avg >= 80) return 'B';
-        else if (avg >= 70) return 'C';
-        else if (avg >= 60) return 'D';
-        else return 'F';
-    }
-
-    // 3- Check Passing
+    /**
+     * Checks if the average meets the passing threshold (>= 60).
+     */
     public static boolean isPassing(double avg) {
-        return avg >= 60;
+        return avg >= GRADE_D_MIN;
     }
 
-    // 4- Print Student Report
-    public static void printStudentReport(String name, double[] grades) {
-
-        double avg = calculateAverage(grades);
-        char grade = getLetterGrade(avg);
-        boolean pass = isPassing(avg);
-
-        System.out.println("===== Student Report =====");
-        System.out.println("Name: " + name);
-        System.out.println("Average: " + avg);
-        System.out.println("Grade: " + grade);
-        System.out.println("Status: " + (pass ? "PASS" : "FAIL"));
-        System.out.println("==========================");
-    }
-
-    // 5- Highest Average
+    /**
+     * Finds the highest value in an array of averages.
+     * Handles null/empty safely.
+     */
     public static double findHighestAverage(double[] averages) {
-        if (averages == null || averages.length == 0) return 0;
-
+        if (averages == null || averages.length == 0) return 0.0;
         double max = averages[0];
-
         for (int i = 1; i < averages.length; i++) {
-            if (averages[i] > max) {
-                max = averages[i];
-            }
+            if (averages[i] > max) max = averages[i];
         }
-
         return max;
     }
 
-    // 6- Count Grades
-    public static void countGrades(double[] averages) {
+    /**
+     * Finds the lowest value in an array of averages.
+     * Handles null/empty safely.
+     */
+    public static double findLowestAverage(double[] averages) {
+        if (averages == null || averages.length == 0) return 0.0;
+        double min = averages[0];
+        for (int i = 1; i < averages.length; i++) {
+            if (averages[i] < min) min = averages[i];
+        }
+        return min;
+    }
 
-        int A = 0, B = 0, C = 0, D = 0, F = 0;
+    /**
+     * Counts how many averages fall into each grade category.
+     * Returns int[5]: index 0=A, 1=B, 2=C, 3=D, 4=F.
+     * Handles null safely.
+     */
+    public static int[] countPerGrade(double[] averages) {
+        int[] counts = new int[5];
+        if (averages == null) return counts;
 
         for (int i = 0; i < averages.length; i++) {
-
-            char g = getLetterGrade(averages[i]);
-
-            switch (g) {
-                case 'A': A++; break;
-                case 'B': B++; break;
-                case 'C': C++; break;
-                case 'D': D++; break;
-                case 'F': F++; break;
+            char letter = toLetter(averages[i]);
+            switch (letter) {
+                case 'A': counts[0]++; break;
+                case 'B': counts[1]++; break;
+                case 'C': counts[2]++; break;
+                case 'D': counts[3]++; break;
+                case 'F': counts[4]++; break;
             }
         }
+        return counts;
+    }
 
-        System.out.println("Grade Distribution:");
-        System.out.println("A: " + A);
-        System.out.println("B: " + B);
-        System.out.println("C: " + C);
-        System.out.println("D: " + D);
-        System.out.println("F: " + F);
+    /**
+     * Prints a formatted report for a single student given name and grades array.
+     * Handles null inputs safely.
+     */
+    public static void printStudentReport(String name, double[] grades) {
+        if (name == null || grades == null) {
+            System.out.println("[Error] Invalid student data.");
+            return;
+        }
+
+        double avg   = calculateAverage(grades);
+        char   grade = toLetter(avg);
+        boolean pass = isPassing(avg);
+
+        System.out.println("===== Student Report =====");
+        System.out.printf("  Name    : %s%n", name);
+        System.out.printf("  Average : %.1f%n", avg);
+        System.out.printf("  Grade   : %c%n", grade);
+        System.out.printf("  Status  : %s%n", pass ? "PASS" : "FAIL");
+        System.out.println("==========================");
     }
 }

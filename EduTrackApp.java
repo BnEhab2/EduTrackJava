@@ -1,154 +1,234 @@
+import java.util.Scanner;
+
+/**
+ * EduTrackApp — Main entry point for the EduTrack system.
+ * Provides an interactive menu loop with input validation.
+ * Manages Student objects (3 subjects) and delegates calculations to EduTrackEngine.
+ * Option [5] launches EduTrackAnalyzer for extended 10-subject analysis.
+ *
+ * No ArrayList or Streams — uses fixed-size arrays only.
+ */
 public class EduTrackApp {
 
-    private String username = "admin";
-    private String password = "123456";
-    private int completedCredits = 0;
-    private int totalCredits = 130;
+    public static final int MAX_STUDENTS = 100;
 
-    public boolean authenticate(String username, String password) {
-        return this.username.equals(username) && this.password.equals(password);
-    }
-
-    public double calculateGPA(double[] graded, double[] credits) {
-        double totalGradePoints = 0;
-        int totalCreditsUsed = 0;
-
-        for (int i = 0; i < graded.length; i++) {
-            totalGradePoints += graded[i] * credits[i];
-            totalCreditsUsed += credits[i];
-        }
-        if (totalCreditsUsed == 0) {
-            return 0;
-        }
-        return totalGradePoints / totalCreditsUsed;
-    }
-
-    public void updateProgress(int NewCredits) {
-        this.completedCredits += NewCredits;
-    }
-
-    public String[] AcademicAlerts(double CurrentGPA) {
-        String[] alerts = new String[2];
-        int count = 0;
-        if (CurrentGPA < 2.0) {
-            alerts[count++] = "Your GPA is below 2.0";
-        }
-        if (CurrentGPA == 0) {
-            alerts[count++] = "No credits completed yet";
-        }
-
-        String[] finalAlert = new String[count];
-        for (int i = 0; i < count; i++) {
-            finalAlert[i] = alerts[i];
-        }
-        return finalAlert;
-    }
-
-    public boolean SaveRecords(String studentID, String recordData) {
-        try {
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public String generateReport(String studentID, double GPA, String[] alerts) {
-        String report = "Academic Report for Student ID: " + studentID + "\n";
-        report += "Current GPA: " + GPA + "\n";
-        report += "Academic Progress: " + completedCredits + " / " + totalCredits + " credits\n";
-
-        if (alerts.length == 0) {
-            report += "Alerts: None\n";
-        } else {
-            report += "Alerts:\n";
-            for (int i = 0; i < alerts.length; i++) {
-                report += "- " + alerts[i] + "\n";
-            }
-        }
-        return report;
-    }
-
-    // ============================================
-    //  MAIN METHOD - Entry Point for the system
-    // ============================================
     public static void main(String[] args) {
 
-        System.out.println("========================================");
-        System.out.println("   Welcome to EduTrack System");
-        System.out.println("========================================\n");
+        Scanner   scanner      = new Scanner(System.in);
+        Student[] students     = new Student[MAX_STUDENTS];
+        int       studentCount = 0;
+        boolean   running      = true;
 
-        // --- 1) Authentication via EduTrackApp ---
-        EduTrackApp app = new EduTrackApp();
+        while (running) {
+            printMenu();
+            int choice = readValidChoice(scanner, 1, 7);
 
-        boolean loginSuccess = app.authenticate("admin", "123456");
-        System.out.println("[Login] Authentication: " + (loginSuccess ? "SUCCESS" : "FAILED"));
+            switch (choice) {
 
-        if (!loginSuccess) {
-            System.out.println("Access denied. Exiting...");
-            return;
+                // ---- [1] Add New Student ----
+                case 1:
+                    if (studentCount >= MAX_STUDENTS) {
+                        System.out.println("\n  [!] Maximum student limit reached (" + MAX_STUDENTS + ").");
+                        break;
+                    }
+                    System.out.print("\n  Enter student name : ");
+                    String name = scanner.nextLine().trim();
+                    if (name.isEmpty()) {
+                        System.out.println("  [!] Name cannot be empty.");
+                        break;
+                    }
+
+                    double java_g = readGrade(scanner, "Java");
+                    double math_g = readGrade(scanner, "Math");
+                    double eng_g  = readGrade(scanner, "English");
+
+                    students[studentCount] = new Student(name, java_g, math_g, eng_g);
+                    studentCount++;
+                    System.out.println("\n  [+] Student added successfully!");
+                    students[studentCount - 1].printRecord();
+                    break;
+
+                // ---- [2] Display All Students ----
+                case 2:
+                    if (studentCount == 0) {
+                        System.out.println("\n  [!] No students registered yet.");
+                        break;
+                    }
+                    printClassReport(students, studentCount);
+                    break;
+
+                // ---- [3] Search Student by Name ----
+                case 3:
+                    if (studentCount == 0) {
+                        System.out.println("\n  [!] No students registered yet.");
+                        break;
+                    }
+                    System.out.print("\n  Enter name to search: ");
+                    String searchName = scanner.nextLine().trim().toLowerCase();
+                    boolean found = false;
+                    for (int i = 0; i < studentCount; i++) {
+                        if (students[i].name.toLowerCase().contains(searchName)) {
+                            students[i].printRecord();
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        System.out.println("  [!] No student found with name: \"" + searchName + "\"");
+                    }
+                    break;
+
+                // ---- [4] Show Top Performer ----
+                case 4:
+                    if (studentCount == 0) {
+                        System.out.println("\n  [!] No students registered yet.");
+                        break;
+                    }
+                    int topIdx = 0;
+                    for (int i = 1; i < studentCount; i++) {
+                        if (students[i].average > students[topIdx].average) {
+                            topIdx = i;
+                        }
+                    }
+                    System.out.println("\n  *** Top Performer ***");
+                    students[topIdx].printRecord();
+                    break;
+
+                // ---- [5] Show Class Statistics ----
+                case 5:
+                    if (studentCount == 0) {
+                        System.out.println("\n  [!] No students registered yet.");
+                        break;
+                    }
+                    double[] avgs = new double[studentCount];
+                    String[] names = new String[studentCount];
+                    for (int i = 0; i < studentCount; i++) {
+                        avgs[i]  = students[i].average;
+                        names[i] = students[i].name;
+                    }
+                    EduTrackAnalyzer.printClassStats(names, avgs, studentCount);
+                    break;
+
+                // ---- [6] Extended Analyzer (10 Subjects) ----
+                case 6:
+                    EduTrackAnalyzer.runAnalysis(scanner);
+                    break;
+
+                // ---- [7] Exit ----
+                case 7:
+                    System.out.println("\n  Goodbye! Thank you for using EduTrack.");
+                    running = false;
+                    break;
+            }
         }
 
-        System.out.println();
+        scanner.close();
+    }
 
-        // --- 2) Create students using the student class (which uses EduTrackEngine internally) ---
-        student s1 = new student("Nour Ahmed", 85.5, 90.0, 78.5);
-        student s2 = new student("Ali Kamel", 55.0, 60.5, 45.0);
-        student s3 = new student("Sara Hassan", 92.0, 88.0, 95.0);
+    // ==================== Menu ====================
 
-        System.out.println("[Student Records]");
-        s1.printRecord();
-        s2.printRecord();
-        s3.printRecord();
+    private static void printMenu() {
+        System.out.println("\n===============================================");
+        System.out.println("|        Welcome to EduTrack v1.0             |");
+        System.out.println("===============================================");
+        System.out.println("[1] Add New Student");
+        System.out.println("[2] Display All Students");
+        System.out.println("[3] Search Student by Name");
+        System.out.println("[4] Show Top Performer");
+        System.out.println("[5] Show Class Statistics");
+        System.out.println("[6] Extended Analyzer (10 Subjects)");
+        System.out.println("[7] Exit");
+        System.out.println("===============================================");
+        System.out.print("Enter your choice: ");
+    }
 
-        // --- 3) Use EduTrackEngine for class-level analysis ---
-        System.out.println("\n[Engine] Full Student Reports:");
-        double[] s1AllGrades = {85.5, 90.0, 78.5, 92.0, 88.0, 95.0, 89.0, 76.5, 91.0, 84.0};
-        double[] s2AllGrades = {55.0, 60.5, 45.0, 50.0, 65.0, 40.0, 58.0, 62.0, 48.0, 52.0};
+    // ==================== Class Report ====================
 
-        EduTrackEngine.printStudentReport("Nour Ahmed", s1AllGrades);
-        EduTrackEngine.printStudentReport("Ali Kamel", s2AllGrades);
+    /**
+     * Prints a formatted class report table matching the project output spec.
+     */
+    private static void printClassReport(Student[] students, int count) {
+        System.out.println("\n================================================================");
+        System.out.println("|              EduTrack - Class Report                         |");
+        System.out.println("================================================================");
+        System.out.printf("%-4s %-18s %-7s %-7s %-7s %-7s %-6s %s%n",
+                "No.", "Name", "Java", "Math", "Eng", "Avg", "Grade", "Status");
+        System.out.printf("%-4s %-18s %-7s %-7s %-7s %-7s %-6s %s%n",
+                "---", "----", "----", "----", "---", "---", "-----", "------");
 
-        // Highest average
-        double avg1 = EduTrackEngine.calculateAverage(s1AllGrades);
-        double avg2 = EduTrackEngine.calculateAverage(s2AllGrades);
-        double[] classAverages = {avg1, avg2};
+        for (int i = 0; i < count; i++) {
+            Student s = students[i];
+            System.out.printf("%-4d %-18s %-7.1f %-7.1f %-7.1f %-7.1f %-6c %s%n",
+                    (i + 1), s.name, s.javaGrade, s.mathGrade, s.englishGrade,
+                    s.average, s.letterGrade, s.isPassing ? "PASS" : "FAIL");
+        }
 
-        double highest = EduTrackEngine.findHighestAverage(classAverages);
-        System.out.println("\n[Engine] Highest Average in class: " + highest);
+        // Class statistics footer
+        double[] avgs = new double[count];
+        String[] nameArr = new String[count];
+        for (int i = 0; i < count; i++) {
+            avgs[i]    = students[i].average;
+            nameArr[i] = students[i].name;
+        }
 
-        // Grade distribution
-        System.out.println();
-        EduTrackEngine.countGrades(classAverages);
+        double overallSum = 0;
+        for (int i = 0; i < count; i++) overallSum += avgs[i];
+        double classAvg = Math.round((overallSum / count) * 10.0) / 10.0;
 
-        // Overloaded method test
-        double singleResult = EduTrackEngine.calculateAverage(95.5);
-        System.out.println("\n[Engine] Overloaded single-grade test: " + singleResult);
+        double highest = EduTrackEngine.findHighestAverage(avgs);
+        double lowest  = EduTrackEngine.findLowestAverage(avgs);
 
-        // --- 4) GPA & Academic tracking via EduTrackApp ---
-        System.out.println("\n[App] GPA & Progress Tracking:");
-        double[] gpaGrades = {3.5, 4.0, 3.0, 3.7};
-        double[] gpaCredits = {3, 4, 3, 3};
-        double gpa = app.calculateGPA(gpaGrades, gpaCredits);
-        System.out.println("Calculated GPA: " + gpa);
+        String topName = nameArr[0];
+        for (int i = 0; i < count; i++) {
+            if (avgs[i] == highest) topName = nameArr[i];
+        }
 
-        app.updateProgress(13);
-        String[] alerts = app.AcademicAlerts(gpa);
+        int[] dist = EduTrackEngine.countPerGrade(avgs);
+        int passing = 0, failing = 0;
+        for (int i = 0; i < count; i++) {
+            if (EduTrackEngine.isPassing(avgs[i])) passing++;
+            else failing++;
+        }
 
-        // Save records
-        boolean saved = app.SaveRecords("20240001", "Semester 1 Data");
-        System.out.println("Records Saved: " + saved);
+        System.out.println("================================================================");
+        System.out.printf("Class Average    : %.1f%n", classAvg);
+        System.out.printf("Top Student      : %s (%.1f)%n", topName, highest);
+        System.out.printf("Grade A Count    : %d%n", dist[0]);
+        System.out.printf("Grade B Count    : %d%n", dist[1]);
+        System.out.printf("Grade C Count    : %d%n", dist[2]);
+        System.out.printf("Grade D Count    : %d%n", dist[3]);
+        System.out.printf("Grade F Count    : %d%n", dist[4]);
+        System.out.printf("Passing          : %d  |  Failing: %d%n", passing, failing);
+        System.out.println("================================================================");
+    }
 
-        // Generate full report
-        System.out.println("\n[App] Academic Report:");
-        String report = app.generateReport("20240001", gpa, alerts);
-        System.out.println(report);
+    // ==================== Input Validation ====================
 
-        // --- 5) Run EduTrackAnalyzer demo ---
-        System.out.println("[Analyzer] Running EduTrackAnalyzer demo...\n");
-        EduTrackAnalyzer.main(new String[]{});
+    /** Reads a valid menu choice within [min, max]. Loops until valid. */
+    private static int readValidChoice(Scanner sc, int min, int max) {
+        while (true) {
+            String line = sc.nextLine().trim();
+            try {
+                int value = Integer.parseInt(line);
+                if (value >= min && value <= max) return value;
+                System.out.printf("  [!] Please enter a number between %d and %d: ", min, max);
+            } catch (NumberFormatException e) {
+                System.out.printf("  [!] Invalid input. Enter a number between %d and %d: ", min, max);
+            }
+        }
+    }
 
-        System.out.println("========================================");
-        System.out.println("   EduTrack System - Complete");
-        System.out.println("========================================");
+    /** Reads a valid grade (0–100) for a named subject. Loops until valid. */
+    private static double readGrade(Scanner sc, String subject) {
+        System.out.printf("  Enter %s grade (0-100): ", subject);
+        while (true) {
+            String line = sc.nextLine().trim();
+            try {
+                double value = Double.parseDouble(line);
+                if (value >= 0 && value <= 100) return value;
+                System.out.printf("  [!] %s grade must be 0-100. Try again: ", subject);
+            } catch (NumberFormatException e) {
+                System.out.printf("  [!] Invalid input. Enter %s grade (0-100): ", subject);
+            }
+        }
     }
 }

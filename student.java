@@ -9,8 +9,8 @@ public class student {
     public char letterGrade;
     public boolean isPassing;
 
-    // Constructor
-    public Student(String name, double javaGrade, double mathGrade, double englishGrade) {
+    // Constructor - must match class name exactly
+    public student(String name, double javaGrade, double mathGrade, double englishGrade) {
 
         this.name = name;
         this.javaGrade = javaGrade;
@@ -20,13 +20,13 @@ public class student {
         // Store grades in array
         double[] grades = {javaGrade, mathGrade, englishGrade};
 
-        // Calculate average
+        // Calculate average using EduTrackEngine
         average = EduTrackEngine.calculateAverage(grades);
 
-        // Calculate letter grade
-        letterGrade = EduTrackEngine.convertToLetterGrade(average);
+        // Calculate letter grade using EduTrackEngine
+        letterGrade = EduTrackEngine.getLetterGrade(average);
 
-        // Check passing status
+        // Check passing status using EduTrackEngine
         isPassing = EduTrackEngine.isPassing(average);
     }
 

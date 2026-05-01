@@ -390,11 +390,20 @@ No.  Input                                Expected Output                     Ac
 6    Add student with all grades 59.9      avg=59.9, grade=F, status=FAIL      59.9, F, FAIL          PASS
 7    Add student with all grades 0.0       avg=0.0, grade=F, status=FAIL       0.0, F, FAIL           PASS
 8    Add student with all grades 100.0     avg=100.0, grade=A, status=PASS     100.0, A, PASS         PASS
-9    Enter "abc" for a grade              Re-prompt with error message         Re-prompts correctly (صوره تيرمينال 3 + 4 هنا: نفس صور اضافة الطلاب وتقرير الفصل اللي تحت)
-(صوره تيرمينال 9 هنا: نفس صورة حالة الحدود اللي تحت)
-(صوره تيرمينال 8 هنا: نفس صورة الادخال الغلط اللي تحت)
-(صوره تيرمينال 6 هنا: نفس صورة البحث اللي تحت)
-(صوره تيرمينال 7 هنا: نفس صورة اعلى طالب اللي تحت)
+9    Enter "abc" for a grade              Re-prompt with error message         Re-prompts correctly   PASS
+10   Enter "150" for a grade              Re-prompt (out of range)             Re-prompts correctly   PASS
+11   Enter empty name (press Enter)       "Name cannot be empty" message       Shows message          PASS
+12   Enter "9" for menu choice            Re-prompt (invalid choice)           Re-prompts correctly   PASS
+13   Display all after adding 3 students  Table with 3 rows + class stats      Correct table shown    PASS
+14   Search "tarek" (lowercase)           Finds "Mohamed Tarek"                Match found            PASS
+15   Show top performer after 3 students  Menna Khaled (91.0)                  Correct student shown  PASS
+
+(صوره تيرمينال 3: نفس صورة اضافة طالب من Section 5)
+(صوره تيرمينال 4: نفس صورة تقرير الفصل من Section 5)
+(صوره تيرمينال 9: نفس صورة حالة الحدود من Section 5)
+(صوره تيرمينال 8: نفس صورة الادخال الغلط من Section 5)
+(صوره تيرمينال 6: نفس صورة البحث من Section 5)
+(صوره تيرمينال 7: نفس صورة اعلى طالب من Section 5)
 
 
 SECTION 5 - Screenshots Guide

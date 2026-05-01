@@ -1,26 +1,12 @@
-/**
- * EduTrackEngine — Core calculation engine for the EduTrack system.
- * Provides static utility methods for grade computation, validation,
- * and reporting. Used by both Student (3 subjects) and EduTrackAnalyzer (10 subjects).
- *
- * No ArrayList or Streams — arrays only.
- */
 public class EduTrackEngine {
 
-    // ==================== Grading Constants ====================
     public static final double GRADE_A_MIN = 90.0;
     public static final double GRADE_B_MIN = 80.0;
     public static final double GRADE_C_MIN = 70.0;
-    public static final double GRADE_D_MIN = 60.0;   // also the passing threshold
+    public static final double GRADE_D_MIN = 60.0;
     public static final double MAX_GRADE    = 100.0;
     public static final double MIN_GRADE    = 0.0;
 
-    // ==================== Core Methods ====================
-
-    /**
-     * Calculates the average of valid grades (0–100).
-     * Handles null/empty arrays safely — returns 0.0.
-     */
     public static double calculateAverage(double[] grades) {
         if (grades == null || grades.length == 0) return 0.0;
 
@@ -38,9 +24,6 @@ public class EduTrackEngine {
         return Math.round((sum / validCount) * 10.0) / 10.0;
     }
 
-    /**
-     * Converts a numeric average to a letter grade using grading constants.
-     */
     public static char toLetter(double avg) {
         if (avg >= GRADE_A_MIN) return 'A';
         if (avg >= GRADE_B_MIN) return 'B';
@@ -49,17 +32,10 @@ public class EduTrackEngine {
         return 'F';
     }
 
-    /**
-     * Checks if the average meets the passing threshold (>= 60).
-     */
     public static boolean isPassing(double avg) {
         return avg >= GRADE_D_MIN;
     }
 
-    /**
-     * Finds the highest value in an array of averages.
-     * Handles null/empty safely.
-     */
     public static double findHighestAverage(double[] averages) {
         if (averages == null || averages.length == 0) return 0.0;
         double max = averages[0];
@@ -69,10 +45,6 @@ public class EduTrackEngine {
         return max;
     }
 
-    /**
-     * Finds the lowest value in an array of averages.
-     * Handles null/empty safely.
-     */
     public static double findLowestAverage(double[] averages) {
         if (averages == null || averages.length == 0) return 0.0;
         double min = averages[0];
@@ -82,11 +54,6 @@ public class EduTrackEngine {
         return min;
     }
 
-    /**
-     * Counts how many averages fall into each grade category.
-     * Returns int[5]: index 0=A, 1=B, 2=C, 3=D, 4=F.
-     * Handles null safely.
-     */
     public static int[] countPerGrade(double[] averages) {
         int[] counts = new int[5];
         if (averages == null) return counts;
@@ -104,13 +71,9 @@ public class EduTrackEngine {
         return counts;
     }
 
-    /**
-     * Prints a formatted report for a single student given name and grades array.
-     * Handles null inputs safely.
-     */
     public static void printStudentReport(String name, double[] grades) {
         if (name == null || grades == null) {
-            System.out.println("[Error] Invalid student data.");
+            System.out.println("Invalid student data.");
             return;
         }
 

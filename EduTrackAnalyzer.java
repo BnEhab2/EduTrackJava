@@ -1,26 +1,11 @@
 import java.util.Scanner;
 
-/**
- * EduTrackAnalyzer — Extended analysis for up to 100 students x 10 subjects.
- * Uses raw arrays and Scanner ONLY (no ArrayList, no Streams).
- *
- * KEY DIFFERENCE (3 vs 10 subjects):
- *   - Student.java stores 3 FIXED subjects (Java, Math, English) as individual fields.
- *   - This analyzer uses a 2D array (double[100][10]) to handle a VARIABLE number
- *     of subjects per student, supporting detailed per-student reports AND
- *     class-wide statistics (overall avg, highest, lowest, grade distribution).
- */
 public class EduTrackAnalyzer {
 
     public static final int MAX_STUDENTS = 100;
     public static final int MAX_SUBJECTS = 10;
 
-    /**
-     * Runs a full interactive 10-subject analysis session.
-     * Reads student data via Scanner, prints per-student reports and class stats.
-     */
     public static void runAnalysis(Scanner scanner) {
-
         System.out.println("\n================================================================");
         System.out.println("|          EduTrack - Extended Analyzer (10 Subjects)          |");
         System.out.println("================================================================");
@@ -35,7 +20,6 @@ public class EduTrackAnalyzer {
         double[][] grades   = new double[numStudents][numSubjects];
         double[]   averages = new double[numStudents];
 
-        // ---- Input Phase ----
         for (int i = 0; i < numStudents; i++) {
             System.out.printf("%nStudent %d of %d%n", i + 1, numStudents);
             System.out.print("  Name: ");
@@ -48,26 +32,20 @@ public class EduTrackAnalyzer {
             averages[i] = EduTrackEngine.calculateAverage(grades[i]);
         }
 
-        // ---- Per-Student Reports ----
         System.out.println("\n================ Per-Student Reports =================");
         for (int i = 0; i < numStudents; i++) {
             EduTrackEngine.printStudentReport(names[i], grades[i]);
         }
 
-        // ---- Class Statistics ----
         printClassStats(names, averages, numStudents);
     }
 
-    /**
-     * Prints class-wide statistics: overall avg, highest/lowest, distribution, pass/fail.
-     */
     public static void printClassStats(String[] names, double[] averages, int count) {
         if (count == 0) {
             System.out.println("\nNo students to analyze.");
             return;
         }
 
-        // Build a trimmed array for calculations
         double[] trimmed = new double[count];
         for (int i = 0; i < count; i++) {
             trimmed[i] = averages[i];
@@ -82,14 +60,13 @@ public class EduTrackAnalyzer {
         double highest = EduTrackEngine.findHighestAverage(trimmed);
         double lowest  = EduTrackEngine.findLowestAverage(trimmed);
 
-        // Find top student name
         String topName = names[0];
         for (int i = 1; i < count; i++) {
             if (trimmed[i] == highest) {
                 topName = names[i];
             }
         }
-        // Find lowest student name
+
         String lowName = names[0];
         for (int i = 1; i < count; i++) {
             if (trimmed[i] == lowest) {
@@ -117,9 +94,6 @@ public class EduTrackAnalyzer {
         System.out.println("================================================================");
     }
 
-    // ==================== Input Validation Helpers ====================
-
-    /** Reads a valid integer within [min, max]. Loops until valid. */
     private static int readValidInt(Scanner sc, int min, int max) {
         int value;
         while (true) {
@@ -127,14 +101,13 @@ public class EduTrackAnalyzer {
             try {
                 value = Integer.parseInt(line);
                 if (value >= min && value <= max) return value;
-                System.out.printf("  [!] Enter a number between %d and %d: ", min, max);
+                System.out.printf("  Enter a number between %d and %d: ", min, max);
             } catch (NumberFormatException e) {
-                System.out.printf("  [!] Invalid input. Enter a number between %d and %d: ", min, max);
+                System.out.printf("  Invalid input. Enter a number between %d and %d: ", min, max);
             }
         }
     }
 
-    /** Reads a valid double within [min, max]. Loops until valid. */
     private static double readValidDouble(Scanner sc, double min, double max) {
         double value;
         while (true) {
@@ -142,9 +115,9 @@ public class EduTrackAnalyzer {
             try {
                 value = Double.parseDouble(line);
                 if (value >= min && value <= max) return value;
-                System.out.printf("  [!] Enter a value between %.0f and %.0f: ", min, max);
+                System.out.printf("  Enter a value between %.0f and %.0f: ", min, max);
             } catch (NumberFormatException e) {
-                System.out.printf("  [!] Invalid input. Enter a number between %.0f and %.0f: ", min, max);
+                System.out.printf("  Invalid input. Enter a number between %.0f and %.0f: ", min, max);
             }
         }
     }

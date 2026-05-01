@@ -1,13 +1,5 @@
 import java.util.Scanner;
 
-/**
- * EduTrackApp — Main entry point for the EduTrack system.
- * Provides an interactive menu loop with input validation.
- * Manages Student objects (3 subjects) and delegates calculations to EduTrackEngine.
- * Option [5] launches EduTrackAnalyzer for extended 10-subject analysis.
- *
- * No ArrayList or Streams — uses fixed-size arrays only.
- */
 public class EduTrackApp {
 
     public static final int MAX_STUDENTS = 100;
@@ -24,17 +16,15 @@ public class EduTrackApp {
             int choice = readValidChoice(scanner, 1, 7);
 
             switch (choice) {
-
-                // ---- [1] Add New Student ----
                 case 1:
                     if (studentCount >= MAX_STUDENTS) {
-                        System.out.println("\n  [!] Maximum student limit reached (" + MAX_STUDENTS + ").");
+                        System.out.println("\n  Maximum student limit reached (" + MAX_STUDENTS + ").");
                         break;
                     }
                     System.out.print("\n  Enter student name : ");
                     String name = scanner.nextLine().trim();
                     if (name.isEmpty()) {
-                        System.out.println("  [!] Name cannot be empty.");
+                        System.out.println("  Name cannot be empty.");
                         break;
                     }
 
@@ -44,23 +34,21 @@ public class EduTrackApp {
 
                     students[studentCount] = new Student(name, java_g, math_g, eng_g);
                     studentCount++;
-                    System.out.println("\n  [+] Student added successfully!");
+                    System.out.println("\n  Student added successfully!");
                     students[studentCount - 1].printRecord();
                     break;
 
-                // ---- [2] Display All Students ----
                 case 2:
                     if (studentCount == 0) {
-                        System.out.println("\n  [!] No students registered yet.");
+                        System.out.println("\n  No students registered yet.");
                         break;
                     }
                     printClassReport(students, studentCount);
                     break;
 
-                // ---- [3] Search Student by Name ----
                 case 3:
                     if (studentCount == 0) {
-                        System.out.println("\n  [!] No students registered yet.");
+                        System.out.println("\n  No students registered yet.");
                         break;
                     }
                     System.out.print("\n  Enter name to search: ");
@@ -73,14 +61,13 @@ public class EduTrackApp {
                         }
                     }
                     if (!found) {
-                        System.out.println("  [!] No student found with name: \"" + searchName + "\"");
+                        System.out.println("  No student found with name: \"" + searchName + "\"");
                     }
                     break;
 
-                // ---- [4] Show Top Performer ----
                 case 4:
                     if (studentCount == 0) {
-                        System.out.println("\n  [!] No students registered yet.");
+                        System.out.println("\n  No students registered yet.");
                         break;
                     }
                     int topIdx = 0;
@@ -93,10 +80,9 @@ public class EduTrackApp {
                     students[topIdx].printRecord();
                     break;
 
-                // ---- [5] Show Class Statistics ----
                 case 5:
                     if (studentCount == 0) {
-                        System.out.println("\n  [!] No students registered yet.");
+                        System.out.println("\n  No students registered yet.");
                         break;
                     }
                     double[] avgs = new double[studentCount];
@@ -108,12 +94,10 @@ public class EduTrackApp {
                     EduTrackAnalyzer.printClassStats(names, avgs, studentCount);
                     break;
 
-                // ---- [6] Extended Analyzer (10 Subjects) ----
                 case 6:
                     EduTrackAnalyzer.runAnalysis(scanner);
                     break;
 
-                // ---- [7] Exit ----
                 case 7:
                     System.out.println("\n  Goodbye! Thank you for using EduTrack.");
                     running = false;
@@ -123,8 +107,6 @@ public class EduTrackApp {
 
         scanner.close();
     }
-
-    // ==================== Menu ====================
 
     private static void printMenu() {
         System.out.println("\n===============================================");
@@ -141,11 +123,6 @@ public class EduTrackApp {
         System.out.print("Enter your choice: ");
     }
 
-    // ==================== Class Report ====================
-
-    /**
-     * Prints a formatted class report table matching the project output spec.
-     */
     private static void printClassReport(Student[] students, int count) {
         System.out.println("\n================================================================");
         System.out.println("|              EduTrack - Class Report                         |");
@@ -162,7 +139,6 @@ public class EduTrackApp {
                     s.average, s.letterGrade, s.isPassing ? "PASS" : "FAIL");
         }
 
-        // Class statistics footer
         double[] avgs = new double[count];
         String[] nameArr = new String[count];
         for (int i = 0; i < count; i++) {
@@ -175,7 +151,6 @@ public class EduTrackApp {
         double classAvg = Math.round((overallSum / count) * 10.0) / 10.0;
 
         double highest = EduTrackEngine.findHighestAverage(avgs);
-        double lowest  = EduTrackEngine.findLowestAverage(avgs);
 
         String topName = nameArr[0];
         for (int i = 0; i < count; i++) {
@@ -201,23 +176,19 @@ public class EduTrackApp {
         System.out.println("================================================================");
     }
 
-    // ==================== Input Validation ====================
-
-    /** Reads a valid menu choice within [min, max]. Loops until valid. */
     private static int readValidChoice(Scanner sc, int min, int max) {
         while (true) {
             String line = sc.nextLine().trim();
             try {
                 int value = Integer.parseInt(line);
                 if (value >= min && value <= max) return value;
-                System.out.printf("  [!] Please enter a number between %d and %d: ", min, max);
+                System.out.printf("  Please enter a number between %d and %d: ", min, max);
             } catch (NumberFormatException e) {
-                System.out.printf("  [!] Invalid input. Enter a number between %d and %d: ", min, max);
+                System.out.printf("  Invalid input. Enter a number between %d and %d: ", min, max);
             }
         }
     }
 
-    /** Reads a valid grade (0–100) for a named subject. Loops until valid. */
     private static double readGrade(Scanner sc, String subject) {
         System.out.printf("  Enter %s grade (0-100): ", subject);
         while (true) {
@@ -225,9 +196,9 @@ public class EduTrackApp {
             try {
                 double value = Double.parseDouble(line);
                 if (value >= 0 && value <= 100) return value;
-                System.out.printf("  [!] %s grade must be 0-100. Try again: ", subject);
+                System.out.printf("  %s grade must be 0-100. Try again: ", subject);
             } catch (NumberFormatException e) {
-                System.out.printf("  [!] Invalid input. Enter %s grade (0-100): ", subject);
+                System.out.printf("  Invalid input. Enter %s grade (0-100): ", subject);
             }
         }
     }

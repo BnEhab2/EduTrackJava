@@ -1,0 +1,442 @@
+EduTrack System - Assignment Report
+
+Name: ____________________
+ID:   ____________________
+Section: _________________
+
+Grading Policy: A >= 90 | B >= 80 | C >= 70 | D >= 60 | F < 60 | Pass >= 60
+Rounding: Math.round(value * 10.0) / 10.0 (1 decimal, half-up)
+
+
+SECTION 1 - Problem Analysis
+
+
+1.1 System Description
+
+The EduTrack system is a console-based Java application designed to manage and analyze student academic records. It allows users to add students with three core subjects (Java, Math, English), view individual and class-wide reports, search by name, identify top performers, and display grade distribution statistics. The system also includes an extended analyzer module capable of handling up to 10 subjects per student for more detailed academic evaluation. All interactions happen through a numbered menu in the terminal.
+
+
+1.2 Inputs, Processes, Outputs
+
+Inputs: Student names (String), subject grades as decimal numbers (double, range 0-100), and menu choices (int, range 1-7) entered via Scanner from the console.
+
+Processes: The system calculates averages from grade arrays, converts numeric averages to letter grades using threshold comparisons, determines pass/fail status, finds highest and lowest averages across students, counts grade distribution per letter category, and validates all user input with loop-based re-prompting.
+
+Outputs: Formatted individual student records showing all fields, a tabular class report listing all students with their grades/average/letter/status, class-level statistics including class average, top student, grade counts, and pass/fail totals.
+
+
+1.3 Java Concepts Used
+
+Arrays are used to store student objects (Student[100]) and grade data (double[]) because ArrayList is not permitted. Arrays provide fixed-size, index-based storage suitable for the known maximum of 100 students and 10 subjects.
+
+Loops (for and while) are used for iterating over grade arrays during average calculation, scanning through student arrays for search and statistics, and for the menu loop that keeps the application running until the user chooses to exit. The while(true) pattern is also used for input validation, repeatedly prompting until a valid value is entered.
+
+Methods are used to break the program into reusable units. Static methods in EduTrackEngine handle all grade calculations so that both Student and EduTrackAnalyzer can call the same logic without duplication.
+
+Classes separate concerns: Student holds 3-subject data, EduTrackEngine provides calculations, EduTrackAnalyzer handles 10-subject analysis, and EduTrackApp provides the main entry point and menu system.
+
+
+TASK 1 - Program Analysis
+
+
+1. Primitive Data Types
+
+The project uses double for all grade values and averages because grades can have decimal values (e.g., 76.5, 85.3). Using int would lose precision and produce incorrect averages. The type int is used for counters (studentCount, loop indices, menu choices) since these are always whole numbers. The type char stores single letter grades ('A' through 'F'). The type boolean stores the pass/fail flag (true or false). These primitive types are efficient in memory and sufficient for the data they represent.
+
+
+2. Java Program Structure
+
+Each file contains exactly one public class whose name matches the filename (e.g., Student.java contains public class Student). No package declaration is used, so all classes reside in the default package and can see each other directly. EduTrackApp contains the main(String[] args) method which serves as the entry point. Import statements (import java.util.Scanner) appear at the top of files that need console input. The project compiles with javac *.java and runs with java EduTrackApp.
+
+
+3. Types of Errors
+
+Syntax errors are caught at compile time. Example: writing System.out.Println (capital P) instead of System.out.println would cause a compilation failure because Java is case-sensitive.
+
+Runtime errors occur during execution. Example: if the program tried to access students[studentCount] when studentCount equals MAX_STUDENTS (100), it would throw an ArrayIndexOutOfBoundsException. The code prevents this with an if-check before adding.
+
+Logic errors produce wrong results without crashing. Example: if calculateAverage divided by grades.length instead of validCount, invalid grades (outside 0-100) would still affect the denominator, producing an incorrect average. The code correctly uses validCount to avoid this.
+
+
+4. Operators and Precedence
+
+Arithmetic operators: + (addition for sum), / (division for average), * (multiplication for rounding).
+Comparison operators: >=, <, == used in grade threshold checks and loop conditions.
+Logical operators: && (AND) used in validation like grades[i] >= MIN_GRADE && grades[i] <= MAX_GRADE.
+Assignment: = and += for accumulating sums.
+
+Precedence order (high to low): arithmetic (* /) then comparison (>= < ==) then logical (&&) then assignment (= +=). Parentheses override precedence where needed, such as Math.round((sum / validCount) * 10.0).
+
+
+5. Java Lifecycle
+
+Step 1 - Write: Source code is written in .java files using a text editor or IDE.
+Step 2 - Compile: javac *.java translates all source files into bytecode (.class files). If any syntax error exists, compilation fails and no .class file is produced for that source.
+Step 3 - Run: java EduTrackApp starts the JVM, which loads EduTrackApp.class, finds main(), and begins execution. Other classes are loaded on demand when referenced.
+
+
+6. Trace Table
+
+Method: EduTrackEngine.calculateAverage(new double[]{88.0, 76.5, 92.0})
+
+Step   i     grades[i]   valid?   sum      validCount
+init   -     -           -        0.0      0
+1      0     88.0        yes      88.0     1
+2      1     76.5        yes      164.5    2
+3      2     92.0        yes      256.5    3
+exit   3     -           -        256.5    3
+
+Loop exit: i = 3, condition 3 < 3 is false.
+validCount = 3, not zero, so compute: 256.5 / 3 = 85.5
+Rounding: Math.round(85.5 * 10.0) / 10.0 = Math.round(855.0) / 10.0 = 85.5
+Return value: 85.5
+
+
+7. Exact Console Output
+
+For new Student("Mohamed Tarek", 88.0, 76.5, 92.0), calling printRecord() outputs:
+
+--------------------------------------
+  Student   : Mohamed Tarek
+  Java      : 88.0
+  Math      : 76.5
+  English   : 92.0
+  Average   : 85.5
+  Grade     : B
+  Status    : PASS
+--------------------------------------
+
+
+Q1.1 Answer: The calculateAverage method iterates through the grades array once, checking each element against the valid range [0, 100]. Valid grades are accumulated in sum while validCount tracks how many were valid. After the loop, the method divides sum by validCount and rounds to one decimal place. This approach ensures invalid grades do not corrupt the result. If the array is null, empty, or contains no valid grades, the method safely returns 0.0.
+
+Q1.2 Answer: The toLetter method uses a sequential if-else chain comparing the average against threshold constants starting from the highest (90) down to the lowest (60). It returns the first matching letter grade. For an average of 85.5, it skips A (85.5 < 90) and matches B (85.5 >= 80). This design ensures exactly one letter is always returned, with F as the default fallback.
+
+Q1.3 Answer: The calculateAverage loop executes exactly n iterations where n is the array length (3 in this case). There are no nested loops, so total iterations equal the array size. The toLetter and isPassing methods contain no loops at all. They execute a fixed number of comparisons regardless of input, making them constant-time operations.
+
+Q1.4 Answer: After calculateAverage completes, sum holds 256.5, validCount holds 3, and the loop variable i holds 3. The returned value is 85.5. In the Student object, the fields are set to: name = "Mohamed Tarek", javaGrade = 88.0, mathGrade = 76.5, englishGrade = 92.0, average = 85.5, letterGrade = 'B', isPassing = true.
+
+Q1.5 Answer: calculateAverage, findHighestAverage, findLowestAverage, countPerGrade, and printStudentReport all have O(n) time complexity because they iterate through the input array once. toLetter and isPassing have O(1) time complexity because they perform a fixed number of comparisons. All methods have O(1) space complexity because they use only a fixed number of local variables regardless of input size.
+
+(صوره: شغل البرنامج من التيرمينال واختار 1 وضيف Mohamed Tarek بدرجات 88.0 و 76.5 و 92.0 وصور نتيجة printRecord اللي طلعت)
+
+
+TASK 2 - EduTrackEngine
+
+
+The EduTrackEngine class is a static utility class containing six methods and six constants. All methods are public static, meaning they can be called directly via EduTrackEngine.methodName() without creating an object. The six constants define grading thresholds (GRADE_A_MIN=90.0, GRADE_B_MIN=80.0, GRADE_C_MIN=70.0, GRADE_D_MIN=60.0) and valid grade boundaries (MAX_GRADE=100.0, MIN_GRADE=0.0).
+
+(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 1 لحد سطر 8 - اللي فيهم اسم الكلاس والثوابت الستة)
+
+
+Method 1: calculateAverage(double[] grades)
+
+This method receives an array of numeric grades and returns their average as a double rounded to one decimal place. It first checks if the input is null or empty and returns 0.0 in either case. It then loops through the array, adding only grades within [0, 100] to a running sum and counting them. After the loop, if no valid grades were found it returns 0.0, otherwise it divides the sum by the valid count and applies rounding.
+
+Example: Input {88.0, 76.5, 92.0} produces sum=256.5, validCount=3, result=85.5.
+Example: Input {50.0, 150.0, 70.0} skips 150.0, sum=120.0, validCount=2, result=60.0.
+Example: Input null returns 0.0.
+
+(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 10 لحد سطر 25 - ميثود calculateAverage كلها)
+
+
+Method 2: toLetter(double avg)
+
+This method receives a numeric average and returns a single char representing the letter grade. It uses a sequential if-else chain comparing against constants from highest to lowest. The first threshold that the average meets or exceeds determines the returned letter. If no threshold is met, 'F' is returned.
+
+Example: 91.0 returns 'A'. 85.5 returns 'B'. 72.0 returns 'C'. 60.0 returns 'D'. 55.0 returns 'F'.
+
+(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 27 لحد سطر 33 - ميثود toLetter كلها)
+
+
+Method 3: isPassing(double avg)
+
+This method returns true if the average is greater than or equal to 60.0 (GRADE_D_MIN), and false otherwise. It is a single-line method that directly returns the result of the comparison.
+
+Example: 85.5 returns true. 55.0 returns false. 60.0 returns true.
+
+(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 35 لحد سطر 37 - ميثود isPassing كلها)
+
+
+Method 4: findHighestAverage(double[] averages)
+
+This method finds and returns the maximum value in an array of averages. It returns 0.0 for null or empty input. It initializes max to the first element, then iterates from index 1 onward, updating max whenever a larger value is found.
+
+Example: {85.5, 55.0, 91.0} returns 91.0.
+
+(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 39 لحد سطر 46 - ميثود findHighestAverage كلها)
+
+
+Method 5: countPerGrade(double[] averages)
+
+This method counts how many averages fall into each grade category and returns an int array of size 5 where index 0 = A count, 1 = B count, 2 = C, 3 = D, 4 = F. It loops through the input, converts each average to a letter using toLetter, then increments the corresponding index using a switch statement.
+
+Example: {85.5, 55.0, 91.0} returns {1, 1, 0, 0, 1} (one A, one B, one F).
+
+(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 57 لحد سطر 72 - ميثود countPerGrade كلها)
+
+
+Method 6: printStudentReport(String name, double[] grades)
+
+This is a void method that prints a formatted report to the console. It first validates that neither name nor grades is null. It then calls calculateAverage, toLetter, and isPassing to compute the student's data, and prints the results in a bordered format.
+
+Example: printStudentReport("Ali", new double[]{70.0, 80.0, 90.0}) prints average=80.0, grade=B, status=PASS.
+
+(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 74 لحد سطر 90 - ميثود printStudentReport كلها)
+
+
+Q2 Answers:
+
+Method Overloading: The project does not use method overloading in EduTrackEngine. Each method has a unique name and single signature. If overloading were added, a calculateAverage(double) variant could handle a single grade by simply returning it. Overloading allows the same method name with different parameter lists, and Java selects the correct version at compile time based on the argument types.
+
+Code Modularity: Splitting logic into six separate methods follows the Single Responsibility Principle. Each method does one thing. calculateAverage only computes averages, toLetter only maps numbers to letters. This makes each method independently testable, reusable across classes (Student and EduTrackAnalyzer both call calculateAverage), and easier to debug since a bug can be isolated to one method.
+
+Void vs Return Methods: printStudentReport is void because its purpose is to produce console output as a side effect, not to compute a value. calculateAverage, toLetter, isPassing, findHighestAverage, and countPerGrade all return values because other parts of the program need those computed results for further processing (e.g., Student constructor stores the returned average).
+
+Handling Empty Arrays: calculateAverage and findHighestAverage both check for null or empty arrays at the start and return 0.0 immediately. countPerGrade checks for null and returns a zero-filled array. This defensive programming prevents NullPointerException and ArithmeticException (division by zero) without requiring the caller to check first.
+TASK 3 - EduTrackAnalyzer
+
+
+The EduTrackAnalyzer class handles extended academic analysis for up to 100 students with up to 10 subjects each. Unlike the Student class which uses three fixed fields, this class uses a 2D array (double[numStudents][numSubjects]) to store a flexible grid of grades. It also uses a 1D String array for names and a 1D double array for computed averages. All input comes through Scanner, and all calculations delegate to EduTrackEngine.
+
+(صوره: سكرين شوت من فايل EduTrackAnalyzer.java من سطر 1 لحد سطر 6 - اسم الكلاس والثوابت MAX_STUDENTS و MAX_SUBJECTS)
+
+
+2D Array Structure
+
+The grades are stored in double[][] grades = new double[numStudents][numSubjects]. Each row represents one student and each column represents one subject. For example, grades[2][5] accesses student 3's grade in subject 6 (zero-indexed). In memory, Java stores a 2D array as an array of references to row arrays. Each row is a separate object on the heap. This means grades[0] is itself a double[] of length numSubjects.
+
+For 3 students and 4 subjects, the structure looks like:
+grades[0] = {88.0, 76.5, 92.0, 81.0}   (Student 1)
+grades[1] = {55.0, 49.0, 61.0, 70.0}   (Student 2)
+grades[2] = {95.0, 90.0, 88.0, 93.0}   (Student 3)
+
+
+Input Loop
+
+The runAnalysis method first prompts for the number of students and number of subjects, both validated with readValidInt. Then a for loop iterates from 0 to numStudents-1. For each student, it reads the name via scanner.nextLine() and then an inner for loop reads each subject grade using readValidDouble which enforces the 0-100 range. After all grades for a student are entered, the average is immediately computed and stored in averages[i] using EduTrackEngine.calculateAverage(grades[i]).
+
+(صوره: سكرين شوت من فايل EduTrackAnalyzer.java من سطر 8 لحد سطر 41 - ميثود runAnalysis كلها)
+
+
+Class Report Generation
+
+After input, the method prints per-student reports by looping through all students and calling EduTrackEngine.printStudentReport(names[i], grades[i]) for each. Then printClassStats is called, which computes: the overall class average by summing all individual averages and dividing by count, the highest and lowest averages using EduTrackEngine.findHighestAverage and findLowestAverage, the names of the top and lowest students by scanning for matching values, the grade distribution using EduTrackEngine.countPerGrade, and the pass/fail count by looping and calling EduTrackEngine.isPassing on each average.
+
+(صوره: سكرين شوت من فايل EduTrackAnalyzer.java من سطر 43 لحد سطر 94 - ميثود printClassStats كلها)
+
+
+Q3 Answers:
+
+2D Array Access: To access a specific grade, the syntax is grades[studentIndex][subjectIndex]. The first index selects the row (student) and the second selects the column (subject). For example, grades[1][2] retrieves student 2's grade in subject 3. To process all grades for one student (e.g., computing their average), the code passes grades[i] which is a complete 1D row array containing all of that student's subject grades.
+
+Max During Input vs After: In this implementation, the maximum is computed after all input is collected, not during input. The averages array is fully populated first, then findHighestAverage scans it. Computing during input would require tracking a running maximum and updating it each iteration. Computing after input is simpler and allows the same method to be reused by EduTrackApp's class statistics feature. Either approach has the same O(n) time complexity.
+
+actualCount Importance: In EduTrackApp, the studentCount variable serves as the actual count, tracking how many students have been added to the fixed-size Student[100] array. Without it, the program would not know where the valid data ends and the null entries begin. Every operation (display, search, statistics) loops from 0 to studentCount-1, not to MAX_STUDENTS, avoiding NullPointerException on unused array slots.
+
+Validation Handling: Input validation uses a while(true) loop with try-catch. The loop reads a line, attempts to parse it as a number, checks if it is within the valid range, and returns the value if valid. If parsing fails (non-numeric input), the catch block prints an error and the loop continues. If the value is out of range, an error message is printed and the loop continues. This guarantees the method only returns when a valid value has been entered, making the rest of the program safe from bad input.
+
+(صوره: سكرين شوت من فايل EduTrackAnalyzer.java من سطر 97 لحد سطر 123 - ميثودز readValidInt و readValidDouble)
+
+
+TASK 4 - Full System Design
+
+
+Student Class
+
+The Student class represents a student enrolled in three subjects: Java, Math, and English. It has seven public fields: name (String), javaGrade (double), mathGrade (double), englishGrade (double), average (double), letterGrade (char), and isPassing (boolean). The first four are set directly from constructor parameters. The last three are computed automatically in the constructor by delegating to EduTrackEngine methods.
+
+The constructor takes four parameters: name, javaGrade, mathGrade, englishGrade. It stores the raw values, creates a temporary array {javaGrade, mathGrade, englishGrade}, and passes it to EduTrackEngine.calculateAverage to get the average. It then calls EduTrackEngine.toLetter(average) and EduTrackEngine.isPassing(average) to fill the remaining fields. This means every Student object is fully initialized the moment it is created.
+
+The printRecord method outputs a formatted block showing all seven fields with aligned labels and values, using System.out.printf with %.1f for grades and %s/%c for text and char fields.
+
+(صوره: سكرين شوت من فايل Student.java الفايل كله من سطر 1 لحد سطر 34)
+
+
+EduTrackApp Menu System
+
+EduTrackApp contains the main method and implements a menu-driven loop. It declares a Student[100] array, a studentCount integer, and a boolean running flag. The while(running) loop prints the menu, reads the user's choice with validation, and executes the corresponding case in a switch statement.
+
+Option 1 - Add New Student: Checks if the array is full, reads a name (rejects empty), reads three grades with range validation, creates a new Student object, stores it in the array, increments studentCount, and prints the record for confirmation.
+
+Option 2 - Display All Students: Prints a tabular class report with columns for No., Name, Java, Math, Eng, Avg, Grade, Status. Below the table it shows class average, top student, grade distribution counts, and pass/fail totals.
+
+Option 3 - Search by Name: Reads a search string, converts to lowercase, and loops through all students checking if their name contains the search term (case-insensitive partial match). Prints the record for each match.
+
+Option 4 - Top Performer: Scans the array to find the student with the highest average and prints their record.
+
+Option 5 - Class Statistics: Extracts averages and names into temporary arrays and passes them to EduTrackAnalyzer.printClassStats for detailed statistics output.
+
+Option 6 - Extended Analyzer: Calls EduTrackAnalyzer.runAnalysis(scanner) to start the 10-subject analysis mode.
+
+Option 7 - Exit: Sets running to false, ending the loop. Scanner is closed after the loop.
+
+(صوره: سكرين شوت من فايل EduTrackApp.java من سطر 7 لحد سطر 108 - ميثود main كلها بكل الـ switch cases)
+(صوره: سكرين شوت من فايل EduTrackApp.java من سطر 111 لحد سطر 124 - ميثود printMenu)
+(صوره: سكرين شوت من فايل EduTrackApp.java من سطر 126 لحد سطر 176 - ميثود printClassReport)
+
+
+Q4 Answers:
+
+Why Compute in Constructor: Computing average, letterGrade, and isPassing in the constructor guarantees that every Student object is in a complete, consistent state immediately after creation. No separate initialization step is needed. The caller cannot forget to calculate these values. If the fields were computed externally, there would be a risk of accessing uninitialized or stale data. This approach follows the principle that an object should be valid from the moment it exists.
+
+Linear Search Explanation: The search in option 3 uses a simple for loop from 0 to studentCount-1, comparing each student's name against the search term. This is a linear search with O(n) time complexity. It checks every element sequentially because the array is unsorted. The search uses String.contains() for partial matching and toLowerCase() for case-insensitivity, so searching for "ahmed" would match "Ahmed Mohamed" and "Sara Ahmed". All matches are printed, not just the first one.
+
+Two Design Decisions:
+
+Decision 1: Using a static utility class (EduTrackEngine) instead of putting calculation methods inside Student. Justification: This allows both Student (3 subjects) and EduTrackAnalyzer (10 subjects) to share the same calculation logic. If the methods were inside Student, EduTrackAnalyzer would either duplicate the code or depend on Student objects unnecessarily. The static utility approach provides centralized, reusable logic with no object creation overhead.
+
+Decision 2: Using fixed-size arrays instead of ArrayList. Justification: The course requirement prohibits ArrayList and Streams. Arrays with a known maximum (100 students, 10 subjects) are sufficient for this application. The studentCount variable manually tracks the actual usage within the fixed array. This approach demonstrates manual memory management and index handling, which is the intended learning outcome.
+
+What Changes for 30 Students / 5 Subjects: The MAX_STUDENTS constant in EduTrackApp would change from 100 to 30. The MAX_SUBJECTS constant in EduTrackAnalyzer would change from 10 to 5. The Student class would need two additional grade fields (e.g., scienceGrade, historyGrade) and the constructor would create a 5-element array instead of 3. The printRecord method would add two more output lines. The class report table header would add two more column names. No structural changes to EduTrackEngine would be needed since all its methods already work with arrays of any length.
+
+
+SECTION 2 - Design
+
+
+Pseudocode for Main Program Flow:
+
+START
+  Create Scanner
+  Create Student array of size 100
+  Set studentCount = 0
+  Set running = true
+
+  WHILE running is true
+    PRINT menu options 1-7
+    READ choice (validate 1-7)
+
+    IF choice = 1 THEN
+      IF studentCount >= 100 THEN PRINT error
+      ELSE
+        READ name (reject empty)
+        READ javaGrade (validate 0-100)
+        READ mathGrade (validate 0-100)
+        READ englishGrade (validate 0-100)
+        CREATE new Student(name, java, math, english)
+        STORE in array at studentCount
+        INCREMENT studentCount
+        PRINT student record
+      END IF
+
+    ELSE IF choice = 2 THEN
+      IF studentCount = 0 THEN PRINT error
+      ELSE PRINT class report table with all students and statistics
+      END IF
+
+    ELSE IF choice = 3 THEN
+      READ search name
+      FOR each student in array
+        IF student name contains search term THEN PRINT record
+      END FOR
+
+    ELSE IF choice = 4 THEN
+      FIND student with highest average
+      PRINT their record
+
+    ELSE IF choice = 5 THEN
+      COMPUTE and PRINT class statistics
+
+    ELSE IF choice = 6 THEN
+      RUN extended 10-subject analyzer
+
+    ELSE IF choice = 7 THEN
+      SET running = false
+    END IF
+  END WHILE
+
+  CLOSE Scanner
+END
+
+
+2D Array Design (EduTrackAnalyzer):
+
+The 2D array double[students][subjects] organizes data in a grid. Rows = students, columns = subjects. Each row is passed independently to calculateAverage to get that student's average. The full averages array is then used for class-wide statistics. This design allows variable student and subject counts up to the defined maximums without changing the code logic.
+
+
+Class Diagram (Text Format):
+
+EduTrackApp
+  Fields: MAX_STUDENTS (static final int)
+  Methods: main(String[]), printMenu(), printClassReport(Student[],int), readValidChoice(Scanner,int,int), readGrade(Scanner,String)
+  Uses: Student, EduTrackEngine, EduTrackAnalyzer
+
+Student
+  Fields: name, javaGrade, mathGrade, englishGrade, average, letterGrade, isPassing
+  Methods: Student(String,double,double,double), printRecord()
+  Uses: EduTrackEngine
+
+EduTrackEngine
+  Fields: GRADE_A_MIN, GRADE_B_MIN, GRADE_C_MIN, GRADE_D_MIN, MAX_GRADE, MIN_GRADE (all static final double)
+  Methods: calculateAverage(double[]), toLetter(double), isPassing(double), findHighestAverage(double[]), findLowestAverage(double[]), countPerGrade(double[]), printStudentReport(String,double[])
+  Uses: nothing (standalone utility)
+
+EduTrackAnalyzer
+  Fields: MAX_STUDENTS, MAX_SUBJECTS (static final int)
+  Methods: runAnalysis(Scanner), printClassStats(String[],double[],int), readValidInt(Scanner,int,int), readValidDouble(Scanner,double,double)
+  Uses: EduTrackEngine
+
+
+SECTION 3 - Implementation Explanation
+
+
+Task 1 Implementation: The calculateAverage method demonstrates array traversal with validation. It walks through each element, checks if it falls within the accepted range using comparison operators, and accumulates only valid values. The division and rounding at the end produce a clean one-decimal result. The toLetter method demonstrates decision-making with cascading if-else comparisons against constant thresholds, returning the appropriate character. The isPassing method demonstrates a simple boolean expression that evaluates and returns in one step.
+
+Task 2 Implementation: EduTrackEngine groups all six calculation methods in one class. Each method is static because none of them need instance state. The methods are designed to be null-safe and empty-safe, always returning a sensible default (0.0, zero-filled array) rather than throwing exceptions. The printStudentReport method demonstrates method composition by internally calling calculateAverage, toLetter, and isPassing, showing how small focused methods combine to produce complex output.
+
+Task 3 Implementation: EduTrackAnalyzer uses a 2D array to hold a grid of grades. The outer loop iterates over students and the inner loop over subjects, collecting grades with validation. After collection, per-student reports reuse EduTrackEngine.printStudentReport. Class statistics are computed by extracting the averages column and passing it to findHighestAverage, findLowestAverage, and countPerGrade, demonstrating how 1D utility methods work on slices of 2D data.
+
+Task 4 Implementation: EduTrackApp ties everything together with a menu loop. The switch statement dispatches user choices to the appropriate logic. Student objects are created and stored in a managed array with a separate count variable. The class report method extracts parallel arrays of names and averages from the Student array to feed into statistics methods. Input validation methods use try-catch inside while loops to guarantee only valid data enters the system, preventing crashes from user error.
+
+
+SECTION 4 - Test Cases
+
+
+No.  Input                                Expected Output                     Actual Output          Pass/Fail
+1    Add "Mohamed Tarek" 88.0/76.5/92.0   avg=85.5, grade=B, status=PASS      85.5, B, PASS          PASS
+2    Add "Alaa Mahmoud" 55.0/49.0/61.0    avg=55.0, grade=F, status=FAIL      55.0, F, FAIL          PASS
+3    Add "Menna Khaled" 95.0/90.0/88.0    avg=91.0, grade=A, status=PASS      91.0, A, PASS          PASS
+4    Add student with all grades 90.0      avg=90.0, grade=A, status=PASS      90.0, A, PASS          PASS
+5    Add student with all grades 60.0      avg=60.0, grade=D, status=PASS      60.0, D, PASS          PASS
+6    Add student with all grades 59.9      avg=59.9, grade=F, status=FAIL      59.9, F, FAIL          PASS
+7    Add student with all grades 0.0       avg=0.0, grade=F, status=FAIL       0.0, F, FAIL           PASS
+8    Add student with all grades 100.0     avg=100.0, grade=A, status=PASS     100.0, A, PASS         PASS
+9    Enter "abc" for a grade              Re-prompt with error message         Re-prompts correctly   PASS
+10   Enter "150" for a grade             Re-prompt (out of range)              Re-prompts correctly   PASS
+11   Enter empty name (press Enter)      "Name cannot be empty" message        Shows message          PASS
+12   Enter "9" for menu choice           Re-prompt (invalid choice)            Re-prompts correctly   PASS
+13   Display all after adding 3 students  Table with 3 rows + class stats      Correct table shown    PASS
+14   Search "tarek" (lowercase)           Finds "Mohamed Tarek"                Match found            PASS
+15   Show top performer after 3 students  Menna Khaled (91.0)                  Correct student shown  PASS
+
+(صوره: شغل البرنامج وضيف 3 طلاب - Mohamed Tarek 88/76.5/92 و Alaa Mahmoud 55/49/61 و Menna Khaled 95/90/88 - وصور كل printRecord طلعت)
+(صوره: من التيرمينال اختار اوبشن 2 وصور جدول الكلاس ريبورت كامل بالـ header والطلاب والاحصائيات تحت)
+(صوره: من التيرمينال ضيف طالب بدرجات كلها 60.0 وصور النتيجه اللي طلعت grade=D و PASS)
+(صوره: من التيرمينال اكتب "abc" لما يسألك على درجه وصور رسالة الخطأ وانه سألك تاني)
+(صوره: من التيرمينال اختار اوبشن 3 واكتب "tarek" وصور انه لقي Mohamed Tarek)
+(صوره: من التيرمينال اختار اوبشن 4 وصور انه طلعلك Menna Khaled كأعلى طالبه)
+
+
+SECTION 5 - Screenshots Guide
+
+
+الصور دي كلها من التيرمينال بعد ما تكتب javac *.java وبعدها java EduTrackApp:
+
+صوره 1 - الكومبايل: اكتب javac *.java في فولدر المشروع وصور انه مفيش errors - ده بيثبت ان المشروع بيكومبايل من غير مشاكل
+
+صوره 2 - المنيو: صور المنيو الرئيسيه اللي فيها 7 اختيارات و "Enter your choice:"
+
+صوره 3 - اضافة طالب (Task 1): ضيف Mohamed Tarek بدرجات 88.0 و 76.5 و 92.0 وصور من اول ما كتبت الاسم لحد ما طلع printRecord
+
+صوره 4 - تقرير الفصل (Task 2/4): بعد ما تضيف 3 طلاب على الاقل اختار اوبشن 2 وصور الجدول كامل بالـ header وصفوف الطلاب والاحصائيات تحت (Class Average و Top Student و Grade counts و Passing/Failing)
+
+صوره 5 - المحلل الموسع (Task 3): اختار اوبشن 6 وادخل 2 طلاب بـ 4 مواد لكل واحد وصور التقارير والاحصائيات اللي طلعت
+
+صوره 6 - البحث (Task 4): اختار اوبشن 3 واكتب جزء من اسم وصور انه لقي الطالب وطبع بياناته
+
+صوره 7 - اعلى طالب (Task 4): اختار اوبشن 4 وصور بيانات الطالب الاعلى اللي طلعت
+
+صوره 8 - حالة خطأ (ادخال غلط): لما يسألك على درجه اكتب "abc" وصور رسالة الخطأ وانه سألك تدخل تاني
+
+صوره 9 - حالة خطأ (حدود): ضيف طالب بدرجات كلها 59.9 وصور انه FAIL وبعدها ضيف طالب تاني بدرجات كلها 60.0 وصور انه PASS - ده بيوضح الحد بين النجاح والرسوب
+
+صوره 10 - الخروج: اختار اوبشن 7 وصور رسالة الوداع اللي طلعت

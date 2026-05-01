@@ -117,7 +117,7 @@ Q1.4 Answer: After calculateAverage completes, sum holds 256.5, validCount holds
 
 Q1.5 Answer: calculateAverage, findHighestAverage, findLowestAverage, countPerGrade, and printStudentReport all have O(n) time complexity because they iterate through the input array once. toLetter and isPassing have O(1) time complexity because they perform a fixed number of comparisons. All methods have O(1) space complexity because they use only a fixed number of local variables regardless of input size.
 
-(صوره: شغل البرنامج من التيرمينال واختار 1 وضيف Mohamed Tarek بدرجات 88.0 و 76.5 و 92.0 وصور نتيجة printRecord اللي طلعت)
+(صوره تيرمينال 3: شغل البرنامج واختار 1 وضيف Mohamed Tarek بدرجات 88 / 76.5 / 92 وصور نتيجة printRecord اللي طلعت)
 
 
 TASK 2 - EduTrackEngine
@@ -125,7 +125,7 @@ TASK 2 - EduTrackEngine
 
 The EduTrackEngine class is a static utility class containing six methods and six constants. All methods are public static, meaning they can be called directly via EduTrackEngine.methodName() without creating an object. The six constants define grading thresholds (GRADE_A_MIN=90.0, GRADE_B_MIN=80.0, GRADE_C_MIN=70.0, GRADE_D_MIN=60.0) and valid grade boundaries (MAX_GRADE=100.0, MIN_GRADE=0.0).
 
-(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 1 لحد سطر 8 - اللي فيهم اسم الكلاس والثوابت الستة)
+(صوره كود 1: سكرين شوت من فايل EduTrackEngine.java من سطر 1 لحد سطر 8 - الثوابت: grading thresholds + min/max)
 
 
 Method 1: calculateAverage(double[] grades)
@@ -136,7 +136,7 @@ Example: Input {88.0, 76.5, 92.0} produces sum=256.5, validCount=3, result=85.5.
 Example: Input {50.0, 150.0, 70.0} skips 150.0, sum=120.0, validCount=2, result=60.0.
 Example: Input null returns 0.0.
 
-(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 10 لحد سطر 25 - ميثود calculateAverage كلها)
+(صوره كود 2: سكرين شوت من فايل EduTrackEngine.java من سطر 10 لحد سطر 25 - ميثود calculateAverage كلها: اللوب + الفاليديشن + الراوندينج)
 
 
 Method 2: toLetter(double avg)
@@ -145,7 +145,7 @@ This method receives a numeric average and returns a single char representing th
 
 Example: 91.0 returns 'A'. 85.5 returns 'B'. 72.0 returns 'C'. 60.0 returns 'D'. 55.0 returns 'F'.
 
-(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 27 لحد سطر 33 - ميثود toLetter كلها)
+(صوره كود 3: سكرين شوت من فايل EduTrackEngine.java من سطر 27 لحد سطر 37 - ميثود toLetter + isPassing مع بعض)
 
 
 Method 3: isPassing(double avg)
@@ -154,8 +154,6 @@ This method returns true if the average is greater than or equal to 60.0 (GRADE_
 
 Example: 85.5 returns true. 55.0 returns false. 60.0 returns true.
 
-(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 35 لحد سطر 37 - ميثود isPassing كلها)
-
 
 Method 4: findHighestAverage(double[] averages)
 
@@ -163,7 +161,7 @@ This method finds and returns the maximum value in an array of averages. It retu
 
 Example: {85.5, 55.0, 91.0} returns 91.0.
 
-(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 39 لحد سطر 46 - ميثود findHighestAverage كلها)
+(صوره كود 4: سكرين شوت من فايل EduTrackEngine.java من سطر 39 لحد سطر 72 - ميثود findHighestAverage + countPerGrade مع بعض)
 
 
 Method 5: countPerGrade(double[] averages)
@@ -172,8 +170,6 @@ This method counts how many averages fall into each grade category and returns a
 
 Example: {85.5, 55.0, 91.0} returns {1, 1, 0, 0, 1} (one A, one B, one F).
 
-(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 57 لحد سطر 72 - ميثود countPerGrade كلها)
-
 
 Method 6: printStudentReport(String name, double[] grades)
 
@@ -181,7 +177,7 @@ This is a void method that prints a formatted report to the console. It first va
 
 Example: printStudentReport("Ali", new double[]{70.0, 80.0, 90.0}) prints average=80.0, grade=B, status=PASS.
 
-(صوره: سكرين شوت من فايل EduTrackEngine.java من سطر 74 لحد سطر 90 - ميثود printStudentReport كلها)
+(صوره كود 5: سكرين شوت من فايل EduTrackEngine.java من سطر 74 لحد سطر 90 - ميثود printStudentReport كلها)
 
 
 Q2 Answers:
@@ -198,7 +194,7 @@ TASK 3 - EduTrackAnalyzer
 
 The EduTrackAnalyzer class handles extended academic analysis for up to 100 students with up to 10 subjects each. Unlike the Student class which uses three fixed fields, this class uses a 2D array (double[numStudents][numSubjects]) to store a flexible grid of grades. It also uses a 1D String array for names and a 1D double array for computed averages. All input comes through Scanner, and all calculations delegate to EduTrackEngine.
 
-(صوره: سكرين شوت من فايل EduTrackAnalyzer.java من سطر 1 لحد سطر 6 - اسم الكلاس والثوابت MAX_STUDENTS و MAX_SUBJECTS)
+
 
 
 2D Array Structure
@@ -215,14 +211,14 @@ Input Loop
 
 The runAnalysis method first prompts for the number of students and number of subjects, both validated with readValidInt. Then a for loop iterates from 0 to numStudents-1. For each student, it reads the name via scanner.nextLine() and then an inner for loop reads each subject grade using readValidDouble which enforces the 0-100 range. After all grades for a student are entered, the average is immediately computed and stored in averages[i] using EduTrackEngine.calculateAverage(grades[i]).
 
-(صوره: سكرين شوت من فايل EduTrackAnalyzer.java من سطر 8 لحد سطر 41 - ميثود runAnalysis كلها)
+(صوره كود 6: سكرين شوت من فايل EduTrackAnalyzer.java من سطر 1 لحد سطر 41 - اسم الكلاس والثوابت + ميثود runAnalysis كلها: الادخال + اللوبات + حساب المتوسطات)
 
 
 Class Report Generation
 
 After input, the method prints per-student reports by looping through all students and calling EduTrackEngine.printStudentReport(names[i], grades[i]) for each. Then printClassStats is called, which computes: the overall class average by summing all individual averages and dividing by count, the highest and lowest averages using EduTrackEngine.findHighestAverage and findLowestAverage, the names of the top and lowest students by scanning for matching values, the grade distribution using EduTrackEngine.countPerGrade, and the pass/fail count by looping and calling EduTrackEngine.isPassing on each average.
 
-(صوره: سكرين شوت من فايل EduTrackAnalyzer.java من سطر 43 لحد سطر 94 - ميثود printClassStats كلها)
+(صوره كود 7: سكرين شوت من فايل EduTrackAnalyzer.java من سطر 43 لحد سطر 123 - ميثود printClassStats + ميثودز readValidInt و readValidDouble)
 
 
 Q3 Answers:
@@ -234,8 +230,6 @@ Max During Input vs After: In this implementation, the maximum is computed after
 actualCount Importance: In EduTrackApp, the studentCount variable serves as the actual count, tracking how many students have been added to the fixed-size Student[100] array. Without it, the program would not know where the valid data ends and the null entries begin. Every operation (display, search, statistics) loops from 0 to studentCount-1, not to MAX_STUDENTS, avoiding NullPointerException on unused array slots.
 
 Validation Handling: Input validation uses a while(true) loop with try-catch. The loop reads a line, attempts to parse it as a number, checks if it is within the valid range, and returns the value if valid. If parsing fails (non-numeric input), the catch block prints an error and the loop continues. If the value is out of range, an error message is printed and the loop continues. This guarantees the method only returns when a valid value has been entered, making the rest of the program safe from bad input.
-
-(صوره: سكرين شوت من فايل EduTrackAnalyzer.java من سطر 97 لحد سطر 123 - ميثودز readValidInt و readValidDouble)
 
 
 TASK 4 - Full System Design
@@ -249,7 +243,7 @@ The constructor takes four parameters: name, javaGrade, mathGrade, englishGrade.
 
 The printRecord method outputs a formatted block showing all seven fields with aligned labels and values, using System.out.printf with %.1f for grades and %s/%c for text and char fields.
 
-(صوره: سكرين شوت من فايل Student.java الفايل كله من سطر 1 لحد سطر 34)
+(صوره كود 8: سكرين شوت من فايل Student.java كله من سطر 1 لحد سطر 34 + فايل EduTrackApp.java من سطر 7 لحد سطر 176 - كلاس Student كامل + main + printMenu + printClassReport)
 
 
 EduTrackApp Menu System
@@ -269,10 +263,6 @@ Option 5 - Class Statistics: Extracts averages and names into temporary arrays a
 Option 6 - Extended Analyzer: Calls EduTrackAnalyzer.runAnalysis(scanner) to start the 10-subject analysis mode.
 
 Option 7 - Exit: Sets running to false, ending the loop. Scanner is closed after the loop.
-
-(صوره: سكرين شوت من فايل EduTrackApp.java من سطر 7 لحد سطر 108 - ميثود main كلها بكل الـ switch cases)
-(صوره: سكرين شوت من فايل EduTrackApp.java من سطر 111 لحد سطر 124 - ميثود printMenu)
-(صوره: سكرين شوت من فايل EduTrackApp.java من سطر 126 لحد سطر 176 - ميثود printClassReport)
 
 
 Q4 Answers:
@@ -400,43 +390,46 @@ No.  Input                                Expected Output                     Ac
 6    Add student with all grades 59.9      avg=59.9, grade=F, status=FAIL      59.9, F, FAIL          PASS
 7    Add student with all grades 0.0       avg=0.0, grade=F, status=FAIL       0.0, F, FAIL           PASS
 8    Add student with all grades 100.0     avg=100.0, grade=A, status=PASS     100.0, A, PASS         PASS
-9    Enter "abc" for a grade              Re-prompt with error message         Re-prompts correctly   PASS
-10   Enter "150" for a grade             Re-prompt (out of range)              Re-prompts correctly   PASS
-11   Enter empty name (press Enter)      "Name cannot be empty" message        Shows message          PASS
-12   Enter "9" for menu choice           Re-prompt (invalid choice)            Re-prompts correctly   PASS
-13   Display all after adding 3 students  Table with 3 rows + class stats      Correct table shown    PASS
-14   Search "tarek" (lowercase)           Finds "Mohamed Tarek"                Match found            PASS
-15   Show top performer after 3 students  Menna Khaled (91.0)                  Correct student shown  PASS
-
-(صوره: شغل البرنامج وضيف 3 طلاب - Mohamed Tarek 88/76.5/92 و Alaa Mahmoud 55/49/61 و Menna Khaled 95/90/88 - وصور كل printRecord طلعت)
-(صوره: من التيرمينال اختار اوبشن 2 وصور جدول الكلاس ريبورت كامل بالـ header والطلاب والاحصائيات تحت)
-(صوره: من التيرمينال ضيف طالب بدرجات كلها 60.0 وصور النتيجه اللي طلعت grade=D و PASS)
-(صوره: من التيرمينال اكتب "abc" لما يسألك على درجه وصور رسالة الخطأ وانه سألك تاني)
-(صوره: من التيرمينال اختار اوبشن 3 واكتب "tarek" وصور انه لقي Mohamed Tarek)
-(صوره: من التيرمينال اختار اوبشن 4 وصور انه طلعلك Menna Khaled كأعلى طالبه)
+9    Enter "abc" for a grade              Re-prompt with error message         Re-prompts correctly (صوره تيرمينال 3 + 4 هنا: نفس صور اضافة الطلاب وتقرير الفصل اللي تحت)
+(صوره تيرمينال 9 هنا: نفس صورة حالة الحدود اللي تحت)
+(صوره تيرمينال 8 هنا: نفس صورة الادخال الغلط اللي تحت)
+(صوره تيرمينال 6 هنا: نفس صورة البحث اللي تحت)
+(صوره تيرمينال 7 هنا: نفس صورة اعلى طالب اللي تحت)
 
 
 SECTION 5 - Screenshots Guide
 
 
-الصور دي كلها من التيرمينال بعد ما تكتب javac *.java وبعدها java EduTrackApp:
+صور التيرمينال (10 صور) - شغل javac *.java وبعدها java EduTrackApp:
 
-صوره 1 - الكومبايل: اكتب javac *.java في فولدر المشروع وصور انه مفيش errors - ده بيثبت ان المشروع بيكومبايل من غير مشاكل
+صوره تيرمينال 1 - الكومبايل: اكتب javac *.java وصور ان مفيش errors
 
-صوره 2 - المنيو: صور المنيو الرئيسيه اللي فيها 7 اختيارات و "Enter your choice:"
+صوره تيرمينال 2 - المنيو: صور المنيو الرئيسيه بالـ 7 اختيارات
 
-صوره 3 - اضافة طالب (Task 1): ضيف Mohamed Tarek بدرجات 88.0 و 76.5 و 92.0 وصور من اول ما كتبت الاسم لحد ما طلع printRecord
+صوره تيرمينال 3 - اضافة طالب: ضيف Mohamed Tarek بدرجات 88 / 76.5 / 92 وصور printRecord اللي طلعت
 
-صوره 4 - تقرير الفصل (Task 2/4): بعد ما تضيف 3 طلاب على الاقل اختار اوبشن 2 وصور الجدول كامل بالـ header وصفوف الطلاب والاحصائيات تحت (Class Average و Top Student و Grade counts و Passing/Failing)
+صوره تيرمينال 4 - تقرير الفصل: بعد 3 طلاب اختار اوبشن 2 وصور الجدول + الاحصائيات
 
-صوره 5 - المحلل الموسع (Task 3): اختار اوبشن 6 وادخل 2 طلاب بـ 4 مواد لكل واحد وصور التقارير والاحصائيات اللي طلعت
+صوره تيرمينال 5 - المحلل الموسع: اختار اوبشن 6 وادخل 2 طلاب / 4 مواد وصور التقارير والاحصائيات
 
-صوره 6 - البحث (Task 4): اختار اوبشن 3 واكتب جزء من اسم وصور انه لقي الطالب وطبع بياناته
+صوره تيرمينال 6 - البحث: اختار اوبشن 3 واكتب tarek وصور انه لقي الطالب
 
-صوره 7 - اعلى طالب (Task 4): اختار اوبشن 4 وصور بيانات الطالب الاعلى اللي طلعت
+صوره تيرمينال 7 - اعلى طالب: اختار اوبشن 4 وصور بيانات اعلى طالب
 
-صوره 8 - حالة خطأ (ادخال غلط): لما يسألك على درجه اكتب "abc" وصور رسالة الخطأ وانه سألك تدخل تاني
+صوره تيرمينال 8 - ادخال غلط: اكتب abc لما يسألك على درجه وصور الخطأ وانه سألك تاني
 
-صوره 9 - حالة خطأ (حدود): ضيف طالب بدرجات كلها 59.9 وصور انه FAIL وبعدها ضيف طالب تاني بدرجات كلها 60.0 وصور انه PASS - ده بيوضح الحد بين النجاح والرسوب
+صوره تيرمينال 9 - حالة حدود: ضيف طالب بـ 59.9 (FAIL) وطالب بـ 60.0 (PASS) وصور الاتنين
 
-صوره 10 - الخروج: اختار اوبشن 7 وصور رسالة الوداع اللي طلعت
+صوره تيرمينال 10 - الخروج: اختار اوبشن 7 وصور رسالة الوداع
+
+
+صور الاكواد (8 صور) - سكرين شوت من الملفات:
+
+صوره كود 1: EduTrackEngine.java سطر 1-8 (الثوابت: grading thresholds + min/max)
+صوره كود 2: EduTrackEngine.java سطر 10-25 (calculateAverage كلها)
+صوره كود 3: EduTrackEngine.java سطر 27-37 (toLetter + isPassing)
+صوره كود 4: EduTrackEngine.java سطر 39-72 (findHighestAverage + countPerGrade)
+صوره كود 5: EduTrackEngine.java سطر 74-90 (printStudentReport)
+صوره كود 6: EduTrackAnalyzer.java سطر 1-41 (الثوابت + runAnalysis)
+صوره كود 7: EduTrackAnalyzer.java سطر 43-123 (printClassStats + validation methods)
+صوره كود 8: Student.java سطر 1-34 + EduTrackApp.java سطر 7-176 (Student كامل + main + menu + report)

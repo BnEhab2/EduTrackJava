@@ -95,7 +95,7 @@ public class EduTrackApp {
                     break;
 
                 case 6:
-                    EduTrackAnalyzer.runAnalysis(scanner);
+                    EduTrackAnalyzer.runAnalysis();
                     break;
 
                 case 7:

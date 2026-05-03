@@ -5,16 +5,20 @@ public class EduTrackAnalyzer {
     public static final int MAX_STUDENTS = 100;
     public static final int MAX_SUBJECTS = 10;
 
-    public static void runAnalysis(Scanner scanner) {
+    public static void runAnalysis() {
+        Scanner scanner = new Scanner(System.in);
+        
         System.out.println("\n================================================================");
         System.out.println("|          EduTrack - Extended Analyzer (10 Subjects)          |");
         System.out.println("================================================================");
 
         System.out.print("Enter number of students (max " + MAX_STUDENTS + "): ");
-        int numStudents = readValidInt(scanner, 1, MAX_STUDENTS);
+        int numStudents = scanner.nextInt();
 
         System.out.print("Enter number of subjects (max " + MAX_SUBJECTS + "): ");
-        int numSubjects = readValidInt(scanner, 1, MAX_SUBJECTS);
+        int numSubjects = scanner.nextInt();
+        
+        scanner.nextLine(); // consume newline
 
         String[]   names    = new String[numStudents];
         double[][] grades   = new double[numStudents][numSubjects];
@@ -27,8 +31,10 @@ public class EduTrackAnalyzer {
 
             for (int j = 0; j < numSubjects; j++) {
                 System.out.printf("  Grade for subject %d (0-100): ", j + 1);
-                grades[i][j] = readValidDouble(scanner, 0, 100);
+                grades[i][j] = scanner.nextDouble();
             }
+            scanner.nextLine(); // consume newline
+            
             averages[i] = EduTrackEngine.calculateAverage(grades[i]);
         }
 
@@ -92,33 +98,5 @@ public class EduTrackAnalyzer {
         System.out.printf("Grade F Count    : %d%n", dist[4]);
         System.out.printf("Passing          : %d  |  Failing: %d%n", passing, failing);
         System.out.println("================================================================");
-    }
-
-    private static int readValidInt(Scanner sc, int min, int max) {
-        int value;
-        while (true) {
-            String line = sc.nextLine().trim();
-            try {
-                value = Integer.parseInt(line);
-                if (value >= min && value <= max) return value;
-                System.out.printf("  Enter a number between %d and %d: ", min, max);
-            } catch (NumberFormatException e) {
-                System.out.printf("  Invalid input. Enter a number between %d and %d: ", min, max);
-            }
-        }
-    }
-
-    private static double readValidDouble(Scanner sc, double min, double max) {
-        double value;
-        while (true) {
-            String line = sc.nextLine().trim();
-            try {
-                value = Double.parseDouble(line);
-                if (value >= min && value <= max) return value;
-                System.out.printf("  Enter a value between %.0f and %.0f: ", min, max);
-            } catch (NumberFormatException e) {
-                System.out.printf("  Invalid input. Enter a number between %.0f and %.0f: ", min, max);
-            }
-        }
     }
 }
